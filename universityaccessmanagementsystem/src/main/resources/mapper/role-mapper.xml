@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.sau.universityaccessmanagementsystem.dao.RoleMapper">
+
+    <sql id="roleFields">
+        role_name, status
+    </sql>
+
+    <insert id="insertRole">
+        insert into role(<include refid="roleFields"></include>)
+        values(#{roleName}, #{status})
+    </insert>
+
+    <update id="updateRole">
+        update role set role_name = #{roleName}
+        <if test="status!=null and status != ''">
+            , status = #{status}
+        </if>
+        where id = #{id}
+    </update>
+
+
+    <select id="findById" resultType="edu.sau.universityaccessmanagementsystem.entity.Role">
+        select * from role where id = #{id} and status != -1
+    </select>
+
+    <select id="getAllList" resultType="edu.sau.universityaccessmanagementsystem.entity.Role">
+        select * from role where status != -1
+    </select>
+</mapper>

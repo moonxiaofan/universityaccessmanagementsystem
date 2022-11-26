@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.sau.universityaccessmanagementsystem.dao.AcademyMapper">
+
+    <sql id="academyFields">
+        academy_id, academy_name, academy_info, status
+    </sql>
+
+    <insert id="insertAcademy" parameterType="Academy" keyProperty="id">
+        insert into academy(<include refid="academyFields"></include>)
+        values(#{academyId}, #{academyName}, #{academyInfo}, #{status})
+    </insert>
+
+    <update id="updateAcademy" parameterType="Academy">
+        update academy set academy_id = #{academyId}, academy_name = #{academyName}, academy_info = #{academyInfo}
+        <if test="status!=null and status != ''">
+            , status = #{status}
+        </if>
+        where id = #{id}
+    </update>
+
+    <select id="getAllList" resultType="edu.sau.universityaccessmanagementsystem.entity.Academy">
+        select * from academy where status != -1
+    </select>
+
+    <select id="findById" resultType="edu.sau.universityaccessmanagementsystem.entity.Academy">
+        select * from academy where id = #{id} and status != -1
+    </select>
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.sau.universityaccessmanagementsystem.dao.ApplyMapper">
+
+    <sql id="applyFields">
+        user_id, academy_id, email, phone, to_place, type, approval_user_id, start_date, end_date, reason, status
+    </sql>
+
+    <insert id="addApplyInfo">
+        insert into apply(<include refid="applyFields"></include>)
+        values(#{userId}, #{academyId}, #{email}, #{phone}, #{toPlace}, #{type}, #{approvalUserId}, #{startDate}, #{endDate}, #{reason}, #{status})
+    </insert>
+
+    <update id="updateApplyStatus">
+        update apply set status = #{status} where id = #{id}
+    </update>
+
+    <select id="getOwnerApplyInfo"
+            resultType="edu.sau.universityaccessmanagementsystem.entity.ApplyResponseVo">
+        select a.id, u.name, ac.academy_name, a.to_place, a.type, u1.name as approvalUserName, a.start_date, a.end_date, a.reason, a.status from apply a
+           left join user u on  a.user_id = u.id
+           left join academy ac on a.academy_id = ac.academy_id
+           left join user u1 on a.approval_user_id = u1.id
+        where u.status != -1 and ac.status != -1 and u.id = #{id}
+        ORDER BY a.start_date desc
+    </select>
+
+    <select id="getApplyUserInfo" resultType="edu.sau.universityaccessmanagementsystem.entity.ApplyResponseVo">
+        select a.id, u.name, ac.academy_name, a.to_place, a.type, u1.name as approvalUserName, a.start_date, a.end_date, a.reason, a.status from apply a
+           left join user u on  a.user_id = u.id
+           left join academy ac on a.academy_id = ac.academy_id
+           left join user u1 on a.approval_user_id = u1.id
+        where u.status != -1 and ac.status != -1 and u1.id = #{param1}
+        <if test="name!=null and name != ''">
+            and u.name like concat('%',#{param2},'%')
+        </if>
+        order by a.status asc
+    </select>
+
+    <select id="getRoundApplyInfoNum"
+            resultType="edu.sau.universityaccessmanagementsystem.entity.ApplyResponseVo">
+        select a.id, u.name, ac.academy_name, a.to_place, a.type, u1.name as approvalUserName, a.start_date, a.end_date, a.reason, a.status from apply a
+        left join user u on  a.user_id = u.id
+        left join academy ac on a.academy_id = ac.academy_id
+        left join user u1 on a.approval_user_id = u1.id
+        where u.status != -1 and ac.status != -1 and u.academy_id = #{param1} and a.status = 2
+        and a.start_date &gt;= #{param2}
+        and a.start_date &lt;= #{param3}
+        order by a.start_date desc
+    </select>
+
+    <select id="getAllRoundApplyInfoNum"
+            resultType="edu.sau.universityaccessmanagementsystem.entity.ApplyResponseVo">
+        select a.id, u.name, ac.academy_name, a.to_place, a.type, u1.name as approvalUserName, a.start_date, a.end_date, a.reason, a.status from apply a
+         left join user u on  a.user_id = u.id
+         left join academy ac on a.academy_id = ac.academy_id
+         left join user u1 on a.approval_user_id = u1.id
+        where u.status != -1 and ac.status != -1 and u.academy_id = #{academyId} and a.status = 2
+        order by a.start_date desc
+    </select>
+</mapper>

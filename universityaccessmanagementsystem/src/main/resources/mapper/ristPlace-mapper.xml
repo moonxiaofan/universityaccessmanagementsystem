@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.sau.universityaccessmanagementsystem.dao.RistPlaceMapper">
+
+    <sql id="riskPlaceFields">
+        place, type
+    </sql>
+
+    <insert id="insert">
+        insert into risk_place(<include refid="riskPlaceFields"></include>)
+        values(#{place}, #{type})
+    </insert>
+
+    <delete id="delete">
+        delete from risk_place
+    </delete>
+
+    <select id="getRiskPlace" resultType="edu.sau.universityaccessmanagementsystem.entity.RiskPlace">
+        select * from risk_place
+    </select>
+
+    <select id="findByPlace" resultType="edu.sau.universityaccessmanagementsystem.entity.RiskPlace">
+        select * from risk_place where place like concat('%',#{place},'%') limit 0,1
+    </select>
+</mapper>

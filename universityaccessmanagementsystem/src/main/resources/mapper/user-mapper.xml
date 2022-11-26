@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.sau.universityaccessmanagementsystem.dao.UserMapper">
+
+    <sql id="userFields">
+        username, password, salt, name, last_login, ip, status, beizhu, email, phone, academy_id, role_id
+    </sql>
+
+    <insert id="insertUser" parameterType="User">
+        insert into user(<include refid="userFields"></include>)
+        values(#{username}, #{password}, #{salt}, #{name}, #{lastLogin}, #{ip}, #{status}, #{beizhu}, #{email}, #{phone}, #{academyId}, #{roleId})
+    </insert>
+
+    <update id="updatetUser" parameterType="User">
+        update user set username = #{username}, password = #{password}, salt = #{salt}, name = #{name},
+                        last_login = #{lastLogin}, ip = #{ip}, status = #{status}, beizhu = #{beizhu},
+                        email = #{email}, phone = #{phone}, academy_id = #{academyId}, role_id = #{roleId} where id = #{id}
+    </update>
+
+    <select id="findByUserName" resultType="edu.sau.universityaccessmanagementsystem.entity.User">
+        select * from user where username = #{username} and status = 0
+    </select>
+
+    <select id="findById" resultType="edu.sau.universityaccessmanagementsystem.entity.User">
+        select * from user where id = #{userId} and status = 0
+    </select>
+
+    <select id="findApproverByUserSearchVo" resultType="edu.sau.universityaccessmanagementsystem.entity.UserSearchResponseVo">
+        select u.id, u.username, u.name, u.beizhu, u.email, u.phone, a.academy_name, u.academy_id from user u
+          left join role r on u.role_id = r.id
+          left join academy a on u.academy_id = a.academy_id
+        where u.role_id = #{roleId} and u.status != -1 and u.status != -1 and a.status != -1 and r.status != -1
+        <if test="name!=null and name != ''">
+            and u.name like concat('%',#{name},'%')
+        </if>
+        <if test="academyId!=0 and academyId != ''">
+            and u.academy_id = #{academyId}
+        </if>
+    </select>
+</mapper>
